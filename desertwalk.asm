@@ -94,29 +94,25 @@ PERSON equ "%" ; What to draw the player as
 
 DrawPlayer: ; Draw player at current cursor position
             ; Cursor position does not move
-    push ax
-    push cx
+    pusha
     mov al, PERSON
     mov cx, 1
     call WriteChar
-    pop cx
-    pop ax
+    popa
     ret
 
 DrawPyramids: ; Draw both pyramids
-    push ax
+    pusha
     mov ax, Pyramid0
     call DrawPyramid
     mov ax, Pyramid1
     call DrawPyramid
-    pop ax
+    popa
     ret
 
 DrawPyramid: ; Draw the pyramid having data at address ax
     ; Get bottom left coord of pyramid in (dl, dh)
-    push bx
-    push cx
-    push dx
+    pusha
     ; Check if invisible
     mov bx, ax
     add bx, PY_OFFSET_VISIBLE
@@ -158,15 +154,12 @@ DrawPyramid_BrickDone:
     call SetCursorPos
     jmp DrawPyramid_Row
 DrawPyramid_Done:
-    pop dx
-    pop cx
-    pop bx
+    popa
     ret
 
 UpdatePyramids: ; Populate pyramid structs based on ScreenX and ScreenY
                 ; Also clears screen
-    push ax
-    push bx
+    pusha
 
     ; P0 is visible if ScreenX is odd
     mov al, [ScreenX]
@@ -192,16 +185,13 @@ UpdatePyramids: ; Populate pyramid structs based on ScreenX and ScreenY
     mov bx, Pyramid0
     add bx, PY_OFFSET_HEIGHT
     mov [bx], ah
-
 UpdatePyramids_Done:
-    pop bx
-    pop ax
+    popa
     call ClearScreen ; Remove existing pyramids
     ret
 
 PrintScreenCoords: ; Print ScreenX/Y values in top left as hex bytes (0x__)
-    push ax
-    push dx
+    pusha
     mov dl, 0
     mov dh, 0
     call SetCursorPos
@@ -212,8 +202,7 @@ PrintScreenCoords: ; Print ScreenX/Y values in top left as hex bytes (0x__)
     call SetCursorPos
     mov dl, [ScreenY]
     call PrintByteHex
-    pop dx
-    pop ax
+    popa
     ; Re-set cursor position (dl and dh were restored but not cursor pos)
     call SetCursorPos
     ret
