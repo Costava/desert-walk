@@ -1,10 +1,5 @@
 ; General routines
 
-GetKeystroke:
-    mov ah, 0x00
-    int 0x16
-    ret
-
 PrintByteHex:                     ; Print byte in dl as 0x__
     push ax
     push cx
