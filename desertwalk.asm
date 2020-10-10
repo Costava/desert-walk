@@ -175,16 +175,31 @@ UpdatePyramids: ; Populate pyramid structs based on ScreenX and ScreenY
     add bx, PY_OFFSET_VISIBLE
     mov [bx], al
 
-    ; Set P0 height
+    ; Set Pyramid0 and Pyramid1 height
+    mov cl, 0         ; 0 for first time, 1 on second time
     mov al, [ScreenX]
+UpdatePyramids_Height:
     mov bl, 13
     mul bl ; Result is in ax
     mov bl, 12
     div bl ; Dividend in ax. Quotient in al. Remainder in ah.
-    ;add ah, 4
+    add ah, 4
+    cmp cl, 1
+    je UpdatePyramids_Py1_Height
+UpdatePyramids_Py0_Height
     mov bx, Pyramid0
+    mov cl, 1
+    jmp UpdatePyramids_Height_Set
+UpdatePyramids_Py1_Height
+    mov bx, Pyramid1
+    mov cl, 2
+    ; Fall through to UpdatePyramids_Height_Set
+UpdatePyramids_Height_Set:
     add bx, PY_OFFSET_HEIGHT
     mov [bx], ah
+    cmp cl, 2
+    mov al, [ScreenY]
+    jne UpdatePyramids_Height
 UpdatePyramids_Done:
     popa
     call ClearScreen ; Remove existing pyramids
