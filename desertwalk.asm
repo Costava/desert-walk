@@ -176,29 +176,27 @@ UpdatePyramids: ; Populate pyramid structs based on ScreenX and ScreenY
     mov [bx], al
 
     ; Set Pyramid0 and Pyramid1 height
-    mov cl, 0         ; 0 for first time, 1 on second time
-    mov al, [ScreenX]
+    push word 0x0000
+    mov ax, Pyramid1 ; This is ugly to mov then push
+    push ax          ; There is probably a better way
+    mov ax, [ScreenY]
+    push ax
+    mov ax, Pyramid0
+    push ax
+    mov ax, [ScreenX]
+    ;push ax ; Pushing then popping the top would be unnecessary
+    ;pop ax
 UpdatePyramids_Height:
     mov bl, 13
-    mul bl ; Result is in ax
+    mul bl       ; Result is in ax
     mov bl, 12
-    div bl ; Dividend in ax. Quotient in al. Remainder in ah.
+    div bl       ; Dividend in ax. Quotient in al. Remainder in ah.
     add ah, 4
-    cmp cl, 1
-    je UpdatePyramids_Py1_Height
-UpdatePyramids_Py0_Height
-    mov bx, Pyramid0
-    mov cl, 1
-    jmp UpdatePyramids_Height_Set
-UpdatePyramids_Py1_Height
-    mov bx, Pyramid1
-    mov cl, 2
-    ; Fall through to UpdatePyramids_Height_Set
-UpdatePyramids_Height_Set:
+    pop bx       ; Pop either Pyramid0 or Pyramid1
     add bx, PY_OFFSET_HEIGHT
     mov [bx], ah
-    cmp cl, 2
-    mov al, [ScreenY]
+    pop ax       ; Pop [ScreenY] or 0x0000
+    cmp ax, 0x0000
     jne UpdatePyramids_Height
 UpdatePyramids_Done:
     popa
@@ -235,15 +233,15 @@ Pyramids:
 Pyramid0: ; Base address of pyramid "struct"
 Pyramid_Start:
 Pyramid_Visible: db 1 ; Boolean value. 0 means not visible.
-Pyramid_X:       db 5
+Pyramid_X:       db 7
 Pyramid_Y:       db 20
 Pyramid_Height:  db 5
 Pyramid_End:
 ; Space for second pyramid
 Pyramid1:
     db 1
-    db 41
-    db 23
+    db 45
+    db 15
     db 14
 
 ; Add offset to base address to get address of member
