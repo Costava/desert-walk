@@ -18,3 +18,5 @@ e.g. `pamac install nasm qemu`
 - After building, you can look at `listing.txt` to determine the size of the meaningful instructions (not counting padding and the magic bytes)
 
 Navigate the character (`%`) with the `WASD` keys.
+
+![Desert Walk](https://i.imgur.com/WEfWjxA.png)
